@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Page title</title>
-  <link rel="stylesheet" href="./sass/index.scss" />
-  <script type="module" src="./index.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework 11</title>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
-  <!-- ❗️❗️❗️ Add parghjtials like so for every page -->
-  <include src="./partials/example.html"></include>
+
+    <!-- форма запиту -->
+    <form class="search-form" id="search-form">
+        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+        <button type="submit" class="button-submit">Search</button>
+    </form>
+
+    <!-- Галерея -->
+    <div class="gallery"></div>
+
+
+    <script src="./js/index.js" type="module"></script>
 </body>
 
 </html>
