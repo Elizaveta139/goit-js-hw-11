@@ -7,17 +7,19 @@ export class NewsApiServer {
   constructor() {
     this.searchQuery = '';
     this.page = 1;
+    this.totalImages = 0;
   }
 
   async fetchImages() {
     // console.log(this);
     try {
       const response = await axios.get(
-        `${URL}?key=${KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
+        `${URL}?key=${KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=200&page=${this.page}`
       );
       this.incrementPage();
-      console.log(response);
-      return response;
+
+      console.log('response.data', response.data);
+      return response.data;
     } catch (error) {
       console.log(error.message);
     }
@@ -30,6 +32,10 @@ export class NewsApiServer {
   resetPage() {
     this.page = 1;
   }
+
+  // setTotalImages(total) {
+  //   this
+  // }
 }
 
 // page=${page}&per_page=${perPage}
