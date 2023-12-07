@@ -1,6 +1,8 @@
 // Створи фронтенд частину застосунку пошуку і перегляду зображень за ключовим словом.
 
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { NewsApiServer } from './pixabay-api';
 import { createMarkup } from './markup';
@@ -12,6 +14,11 @@ const btnLoadMore = document.querySelector('.load-more');
 
 searchForm.addEventListener('submit', onSubmitForm);
 btnLoadMore.addEventListener('click', onLoadMore);
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const newsApiServer = new NewsApiServer();
 btnLoadMore.classList.add('hidden');
@@ -49,26 +56,33 @@ function fetchPhoto() {
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
         appendPhotoMarkup(data);
+        lightbox.refresh();
         btnLoadMore.classList.remove('hidden');
       }
 
-      //Якщо користувач дійшов до кінця колекції
-      if (this.page < Math.ceil(data.totalHits / perPage)) {
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        btnLoadMore.classList.add('hidden');
-      }
+      // //Якщо користувач дійшов до кінця колекції
+      // if (this.page < Math.ceil(data.totalHits / perPage)) {
+      //   Notiflix.Notify.info(
+      //     "We're sorry, but you've reached the end of search results."
+      //   );
+      //   btnLoadMore.classList.add('hidden');
+      // }
     })
     .catch(error => error.message);
-
-  // console.log('gallery', galleryContainer.children.length);
 }
+
+// function checkObserver() {
+//   if (!newsApiServer.numberOfPage()) {
+//     Notiflix.Notify.info(
+//       "We're sorry, but you've reached the end of search results."
+//     );
+//     btnLoadMore.classList.add('hidden');
+//   }
+// }
 
 //по кліку на Load More
 function onLoadMore() {
   newsApiServer.fetchImages().then(appendPhotoMarkup);
-  newsApiServer.incrementLoadedImages(hits);
 }
 
 //додаємо розмітку
