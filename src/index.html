@@ -9,17 +9,19 @@
 </head>
 
 <body>
+    <header class="header">
+        <!-- форма запиту -->
+        <div class="div-form">
+            <form class="search-form" id="search-form">
+                <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+                <button type="submit" class="button-submit">Search</button>
+            </form>
+        </div>
+    </header>
 
-    <!-- форма запиту -->
-    <div class="div-form">
-        <form class="search-form" id="search-form">
-            <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
-            <button type="submit" class="button-submit">Search</button>
-        </form>
-    </div>
 
     <!-- Галерея -->
-    <div class="gallery"></div>
+    <div data-sr class="gallery"></div>
 
     <button type="button" class="load-more">Load more</button>
 
