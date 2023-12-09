@@ -28,9 +28,11 @@ const newsApiServer = new NewsApiServer();
 function onSubmitForm(evt) {
   evt.preventDefault();
 
-  window.addEventListener('scroll', infinityScroll);
-  // btnLoadMore.classList.replace('load-more', 'hidden');
   galleryContainer.innerHTML = '';
+
+  window.addEventListener('scroll', infinityScroll);
+
+  // btnLoadMore.classList.replace('load-more', 'hidden');
 
   newsApiServer.searchQuery = evt.currentTarget.elements.searchQuery.value
     .trim()
@@ -39,11 +41,13 @@ function onSubmitForm(evt) {
     .join('+');
   console.log(newsApiServer.searchQuery);
 
+  newsApiServer.resetPage();
+  newsApiServer.page = 1;
+
   if (newsApiServer.searchQuery === '') {
     return Notiflix.Notify.info('Please fill in the search field.');
   }
 
-  newsApiServer.resetPage();
   fetchPhoto();
 }
 
@@ -58,21 +62,34 @@ function fetchPhoto() {
         );
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+
         appendPhotoMarkup(data);
 
         lightbox.refresh();
         // btnLoadMore.classList.replace('hidden', 'load-more');
       }
-
-      //Якщо користувач дійшов до кінця колекції
-      // if (data.totalHits <= data.hits.length) {
-      //   Notiflix.Notify.info(
-      //     "We're sorry, but you've reached the end of search results."
-      //   );
-      //   // btnLoadMore.classList.replace('load-more', 'hidden');
-      // }
     })
     .catch(error => console.log(error.message));
+}
+
+//перевірка коли користувач дійшов до кінця колекції
+function lastPages(data) {
+  const lastPage = Math.ceil(data.totalHits / newsApiServer.per_page);
+  console.log('last', lastPage);
+
+  if (lastPage === newsApiServer.page) {
+    Notiflix.Notify.info(
+      "We're sorry, but you've reached the end of search results."
+    );
+    window.removeEventListener('scroll', infinityScroll);
+    return;
+  }
+
+  appendPhotoMarkup(data);
+  pageScrolling();
+  lightbox.refresh();
+
+  console.log('p', newsApiServer.page);
 }
 
 // Load More
@@ -80,19 +97,7 @@ function onLoadMore() {
   newsApiServer
     .fetchImages()
     .then(data => {
-      const lastPage = Math.ceil(
-        newsApiServer.fetchImages().totalHits / newsApiServer.per_page
-      );
-      console.log('last', lastPage);
-      appendPhotoMarkup(data);
-      pageScrolling();
-      if (lastPage === newsApiServer.page) {
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        window.removeEventListener('scroll', infinityScroll);
-        return;
-      }
+      lastPages(data);
     })
     .catch(error =>
       Notiflix.Notify.info(
