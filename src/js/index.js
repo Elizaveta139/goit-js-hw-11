@@ -11,7 +11,7 @@ const searchForm = document.querySelector('.search-form');
 const buttonSubmit = document.querySelector('.button-submit');
 const galleryContainer = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
-const guard = document.querySelector('.js-guard');
+const loader = document.querySelector('.loader');
 
 searchForm.addEventListener('submit', onSubmitForm);
 // btnLoadMore.addEventListener('click', onLoadMore);
@@ -23,6 +23,7 @@ const lightbox = new SimpleLightbox('.gallery a', {
 
 const newsApiServer = new NewsApiServer();
 // btnLoadMore.classList.replace('load-more', 'hidden');
+loader.classList.replace('loader', 'hidden');
 
 //зчитуємо при сабміті
 function onSubmitForm(evt) {
@@ -82,6 +83,7 @@ function lastPages(data) {
       "We're sorry, but you've reached the end of search results."
     );
     window.removeEventListener('scroll', infinityScroll);
+    loader.classList.replace('loader', 'hidden');
     return;
   }
 
@@ -130,4 +132,5 @@ function infinityScroll() {
   if (scrollTop + clientHeight >= scrollHeight - 5) {
     onLoadMore();
   }
+  loader.classList.replace('hidden', 'loader');
 }
