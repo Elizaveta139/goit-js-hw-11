@@ -1,7 +1,6 @@
 // Створи фронтенд частину застосунку пошуку і перегляду зображень за ключовим словом.
 
 import Notiflix from 'notiflix';
-import InfiniteScroll from 'infinite-scroll';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -12,30 +11,25 @@ const searchForm = document.querySelector('.search-form');
 const buttonSubmit = document.querySelector('.button-submit');
 const galleryContainer = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
+const guard = document.querySelector('.js-guard');
 
 searchForm.addEventListener('submit', onSubmitForm);
-btnLoadMore.addEventListener('click', onLoadMore);
+// btnLoadMore.addEventListener('click', onLoadMore);
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-// let infScroll = new InfiniteScroll(galleryContainer, {
-//   // options
-//   path: '.pagination__next',
-//   append: '.post',
-//   history: false,
-// });
-
 const newsApiServer = new NewsApiServer();
-btnLoadMore.classList.replace('load-more', 'hidden');
+// btnLoadMore.classList.replace('load-more', 'hidden');
 
 //зчитуємо при сабміті
 function onSubmitForm(evt) {
   evt.preventDefault();
 
-  btnLoadMore.classList.replace('load-more', 'hidden');
+  window.addEventListener('scroll', infinityScroll);
+  // btnLoadMore.classList.replace('load-more', 'hidden');
   galleryContainer.innerHTML = '';
 
   newsApiServer.searchQuery = evt.currentTarget.elements.searchQuery.value
@@ -67,26 +61,44 @@ function fetchPhoto() {
         appendPhotoMarkup(data);
 
         lightbox.refresh();
-        btnLoadMore.classList.replace('hidden', 'load-more');
+        // btnLoadMore.classList.replace('hidden', 'load-more');
       }
 
       //Якщо користувач дійшов до кінця колекції
-      if (data.totalHits <= galleryContainer.children.length) {
+      // if (data.totalHits <= data.hits.length) {
+      //   Notiflix.Notify.info(
+      //     "We're sorry, but you've reached the end of search results."
+      //   );
+      //   // btnLoadMore.classList.replace('load-more', 'hidden');
+      // }
+    })
+    .catch(error => console.log(error.message));
+}
+
+// Load More
+function onLoadMore() {
+  newsApiServer
+    .fetchImages()
+    .then(data => {
+      const lastPage = Math.ceil(
+        newsApiServer.fetchImages().totalHits / newsApiServer.per_page
+      );
+      console.log('last', lastPage);
+      appendPhotoMarkup(data);
+      pageScrolling();
+      if (lastPage === newsApiServer.page) {
         Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
-        btnLoadMore.classList.replace('load-more', 'hidden');
+        window.removeEventListener('scroll', infinityScroll);
+        return;
       }
     })
-    .catch(error => error.message);
-}
-
-//по кліку на Load More
-function onLoadMore() {
-  newsApiServer.fetchImages().then(data => {
-    appendPhotoMarkup(data);
-    pageScrolling();
-  });
+    .catch(error =>
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      )
+    );
 }
 
 //додаємо розмітку
@@ -104,4 +116,13 @@ function pageScrolling() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+}
+
+// Infinity scroll
+
+function infinityScroll() {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    onLoadMore();
+  }
 }
