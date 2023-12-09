@@ -29,7 +29,7 @@ loader.classList.replace('loader', 'hidden');
 function onSubmitForm(evt) {
   evt.preventDefault();
 
-  galleryContainer.innerHTML = '';
+  clearPage();
 
   window.addEventListener('scroll', infinityScroll);
 
@@ -41,9 +41,6 @@ function onSubmitForm(evt) {
     .split(' ')
     .join('+');
   console.log(newsApiServer.searchQuery);
-
-  newsApiServer.resetPage();
-  newsApiServer.page = 1;
 
   if (newsApiServer.searchQuery === '') {
     return Notiflix.Notify.info('Please fill in the search field.');
@@ -58,6 +55,7 @@ function fetchPhoto() {
     .fetchImages()
     .then(data => {
       if (data.totalHits === 0) {
+        clearPage();
         return Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
@@ -65,6 +63,7 @@ function fetchPhoto() {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
         appendPhotoMarkup(data);
+        pageScrolling();
 
         lightbox.refresh();
         // btnLoadMore.classList.replace('hidden', 'load-more');
@@ -111,6 +110,12 @@ function onLoadMore() {
 //додаємо розмітку
 function appendPhotoMarkup(data) {
   galleryContainer.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+}
+
+function clearPage() {
+  galleryContainer.innerHTML = '';
+  newsApiServer.page = 1;
+  newsApiServer.resetPage();
 }
 
 //плавне прокручування сторінки

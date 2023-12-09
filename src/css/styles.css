@@ -112,7 +112,7 @@ img {
   margin-bottom: 30px;
   /* margin-top: 60px; */
   padding-bottom: 20px;
-  padding-top: 80px;
+  padding-top: 70px;
 }
 
 
@@ -153,10 +153,10 @@ img {
 .info {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   text-align: center;
+   
 }
-
 
 /* loader */
 .loader {

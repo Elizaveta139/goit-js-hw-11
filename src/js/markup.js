@@ -16,16 +16,16 @@ export function createMarkup(searchData) {
           </a>
           <div class="info">
             <p class="info-item">
-              <b>Likes: ${likes}</b>
+              <b>Likes: <br> ${likes}</b>
             </p>
             <p class="info-item">
-              <b>Views: ${views}</b>
+              <b>Views: <br> ${views}</b>
             </p>
             <p class="info-item">
-              <b>Comments: ${comments}</b>
+              <b>Comments: <br> ${comments}</b>
             </p>
             <p class="info-item">
-              <b>Downloads: ${downloads}</b>
+              <b>Downloads: <br> ${downloads}</b>
             </p>
           </div>
         </div>`;
