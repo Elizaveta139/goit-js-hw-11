@@ -11,6 +11,7 @@ const searchForm = document.querySelector('.search-form');
 const galleryContainer = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
 const loader = document.querySelector('.loader');
+
 searchForm.addEventListener('submit', onSubmitForm);
 // btnLoadMore.addEventListener('click', onLoadMore);
 
@@ -45,6 +46,7 @@ function onSubmitForm(evt) {
   }
 
   fetchPhoto();
+  // evt.currentTarget.reset();
 }
 
 //фетч картинок і відображення
@@ -118,7 +120,7 @@ function pageScrolling() {
     .firstElementChild.getBoundingClientRect();
 
   window.scrollBy({
-    top: cardHeight * 2,
+    top: cardHeight * 1.5,
     behavior: 'smooth',
   });
 }
@@ -130,5 +132,6 @@ function infinityScroll() {
   if (scrollTop + clientHeight >= scrollHeight - 5) {
     onLoadMore();
   }
+
   loader.classList.replace('hidden', 'loader');
 }
