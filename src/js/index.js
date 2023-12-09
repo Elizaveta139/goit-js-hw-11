@@ -19,6 +19,8 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
+let totalImgs = 0;
+
 const newsApiServer = new NewsApiServer();
 // btnLoadMore.classList.replace('load-more', 'hidden');
 loader.classList.replace('loader', 'hidden');
@@ -27,6 +29,7 @@ loader.classList.replace('loader', 'hidden');
 function onSubmitForm(evt) {
   evt.preventDefault();
 
+  totalImgs = 0;
   clearPage();
   window.addEventListener('scroll', infinityScroll);
 
@@ -49,7 +52,7 @@ function onSubmitForm(evt) {
 
   fetchPhoto();
 }
-let summ = 0;
+
 //фетч картинок і відображення
 function fetchPhoto() {
   newsApiServer
@@ -63,12 +66,13 @@ function fetchPhoto() {
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
-        lastPages(data);
+        // lastPages(data);
         appendPhotoMarkup(data);
         pageScrolling();
 
         lightbox.refresh();
-        console.log('data.hits', (summ += data.hits.length));
+        totalImgs += data.hits.length;
+        console.log('data.hits', totalImgs);
         // btnLoadMore.classList.replace('hidden', 'load-more');
       }
     })
@@ -76,39 +80,29 @@ function fetchPhoto() {
 }
 
 //перевірка коли користувач дійшов до кінця колекції
-function lastPages(data) {
-  const lastPage = Math.ceil(data.totalHits / newsApiServer.per_page);
-  console.log('last', lastPage);
-
-  if (lastPage === newsApiServer.page) {
-    Notiflix.Notify.info(
-      "We're sorry, but you've reached the end of search results."
-    );
-    window.removeEventListener('scroll', infinityScroll);
-    loader.classList.replace('loader', 'hidden');
-    return;
-  }
-
-  appendPhotoMarkup(data);
-  pageScrolling();
-  lightbox.refresh();
-
-  console.log('p', newsApiServer.page);
-}
-
 // Load More
 function onLoadMore() {
   newsApiServer
     .fetchImages()
     .then(data => {
-      lastPages(data);
-      console.log('data.hits', (summ += data.hits.length));
+      // lastPages(data);
+      appendPhotoMarkup(data);
+      pageScrolling();
+      lightbox.refresh();
+
+      totalImgs += data.hits.length;
+      console.log('data.hits', totalImgs);
+
+      if (data.totalHits <= totalImgs) {
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+        window.removeEventListener('scroll', infinityScroll);
+        loader.classList.replace('loader', 'hidden');
+        totalImgs = 0;
+      }
     })
-    .catch(error =>
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      )
-    );
+    .catch(error => console.log(error.message));
 }
 
 //додаємо розмітку
