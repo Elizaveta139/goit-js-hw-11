@@ -8,7 +8,7 @@ export class NewsApiServer {
     this.searchQuery = '';
     this.page = 1;
     this.per_page = 40;
-    // this.totalImages = 0;
+    this.totalImgs = 0;
   }
 
   async fetchImages() {
@@ -33,14 +33,6 @@ export class NewsApiServer {
   resetPage() {
     this.page = 1;
   }
-
-  // setTotalImages(total) {
-  //   this.totalImages += total;
-  // }
-
-  // numberOfPage() {
-  //   return this.page < Math.ceil(this.totalImages / this.per_page);
-  // }
 }
 
 // page=${page}&per_page=${perPage}

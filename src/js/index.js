@@ -19,8 +19,6 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
-let totalImgs = 0;
-
 const newsApiServer = new NewsApiServer();
 // btnLoadMore.classList.replace('load-more', 'hidden');
 loader.classList.replace('loader', 'hidden');
@@ -29,13 +27,9 @@ loader.classList.replace('loader', 'hidden');
 function onSubmitForm(evt) {
   evt.preventDefault();
 
-  totalImgs = 0;
-  clearPage();
   window.addEventListener('scroll', infinityScroll);
-
-  console.log((galleryContainer.innerHTML = ''));
-
-  // window.addEventListener('scroll', infinityScroll);
+  newsApiServer.totalImgs = 0;
+  clearPage();
 
   // btnLoadMore.classList.replace('load-more', 'hidden');
 
@@ -55,6 +49,7 @@ function onSubmitForm(evt) {
 
 //фетч картинок і відображення
 function fetchPhoto() {
+  clearPage();
   newsApiServer
     .fetchImages()
     .then(data => {
@@ -71,8 +66,8 @@ function fetchPhoto() {
         pageScrolling();
 
         lightbox.refresh();
-        totalImgs += data.hits.length;
-        console.log('data.hits', totalImgs);
+        newsApiServer.totalImgs += data.hits.length;
+        console.log('data.hits', newsApiServer.totalImgs);
         // btnLoadMore.classList.replace('hidden', 'load-more');
       }
     })
@@ -85,15 +80,14 @@ function onLoadMore() {
   newsApiServer
     .fetchImages()
     .then(data => {
-      // lastPages(data);
       appendPhotoMarkup(data);
       pageScrolling();
       lightbox.refresh();
 
-      totalImgs += data.hits.length;
-      console.log('data.hits', totalImgs);
+      newsApiServer.totalImgs += data.hits.length;
+      console.log('data.hits', newsApiServer.totalImgs);
 
-      if (data.totalHits <= totalImgs) {
+      if (data.totalHits <= newsApiServer.totalImgs) {
         Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
