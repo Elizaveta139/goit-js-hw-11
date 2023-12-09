@@ -8,11 +8,9 @@ import { NewsApiServer } from './pixabay-api';
 import { createMarkup } from './markup';
 
 const searchForm = document.querySelector('.search-form');
-const buttonSubmit = document.querySelector('.button-submit');
 const galleryContainer = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more');
 const loader = document.querySelector('.loader');
-
 searchForm.addEventListener('submit', onSubmitForm);
 // btnLoadMore.addEventListener('click', onLoadMore);
 
@@ -30,8 +28,11 @@ function onSubmitForm(evt) {
   evt.preventDefault();
 
   clearPage();
-
   window.addEventListener('scroll', infinityScroll);
+
+  console.log((galleryContainer.innerHTML = ''));
+
+  // window.addEventListener('scroll', infinityScroll);
 
   // btnLoadMore.classList.replace('load-more', 'hidden');
 
@@ -48,7 +49,7 @@ function onSubmitForm(evt) {
 
   fetchPhoto();
 }
-
+let summ = 0;
 //фетч картинок і відображення
 function fetchPhoto() {
   newsApiServer
@@ -62,10 +63,12 @@ function fetchPhoto() {
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
+        lastPages(data);
         appendPhotoMarkup(data);
         pageScrolling();
 
         lightbox.refresh();
+        console.log('data.hits', (summ += data.hits.length));
         // btnLoadMore.classList.replace('hidden', 'load-more');
       }
     })
@@ -99,6 +102,7 @@ function onLoadMore() {
     .fetchImages()
     .then(data => {
       lastPages(data);
+      console.log('data.hits', (summ += data.hits.length));
     })
     .catch(error =>
       Notiflix.Notify.info(
@@ -112,6 +116,7 @@ function appendPhotoMarkup(data) {
   galleryContainer.insertAdjacentHTML('beforeend', createMarkup(data.hits));
 }
 
+//очищення
 function clearPage() {
   galleryContainer.innerHTML = '';
   newsApiServer.page = 1;
