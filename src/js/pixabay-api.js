@@ -19,6 +19,7 @@ export class NewsApiServer {
       );
       this.incrementPage();
 
+      console.log('p', this.page);
       console.log('response.data', response.data);
       return response.data;
     } catch (error) {
@@ -35,6 +36,7 @@ export class NewsApiServer {
   }
 }
 
+////////////////////////
 // page=${page}&per_page=${perPage}
 // async function fetchImages(q) {
 //   try {

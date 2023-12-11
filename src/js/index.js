@@ -28,9 +28,9 @@ loader.classList.replace('loader', 'hidden');
 function onSubmitForm(evt) {
   evt.preventDefault();
 
-  window.addEventListener('scroll', infinityScroll);
-  newsApiServer.totalImgs = 0;
   clearPage();
+
+  window.addEventListener('scroll', infinityScroll);
 
   // btnLoadMore.classList.replace('load-more', 'hidden');
 
@@ -52,6 +52,7 @@ function onSubmitForm(evt) {
 //фетч картинок і відображення
 function fetchPhoto() {
   clearPage();
+
   newsApiServer
     .fetchImages()
     .then(data => {
@@ -66,8 +67,8 @@ function fetchPhoto() {
         // lastPages(data);
         appendPhotoMarkup(data);
         pageScrolling();
-
         lightbox.refresh();
+
         newsApiServer.totalImgs += data.hits.length;
         console.log('data.hits', newsApiServer.totalImgs);
         // btnLoadMore.classList.replace('hidden', 'load-more');
@@ -76,7 +77,7 @@ function fetchPhoto() {
     .catch(error => console.log(error.message));
 }
 
-//перевірка коли користувач дійшов до кінця колекції
+//завантаження / перевірка коли користувач дійшов до кінця колекції
 // Load More
 function onLoadMore() {
   newsApiServer
@@ -111,6 +112,7 @@ function clearPage() {
   galleryContainer.innerHTML = '';
   newsApiServer.page = 1;
   newsApiServer.resetPage();
+  newsApiServer.totalImgs = 0;
 }
 
 //плавне прокручування сторінки
@@ -135,3 +137,77 @@ function infinityScroll() {
 
   loader.classList.replace('hidden', 'loader');
 }
+
+////////////////////////
+//зчитуємо при сабміті
+// async function onSubmitForm(evt) {
+//   evt.preventDefault();
+
+//   window.addEventListener('scroll', infinityScroll);
+
+//   clearPage();
+
+//   // btnLoadMore.classList.replace('load-more', 'hidden');
+
+//   newsApiServer.searchQuery = evt.currentTarget.elements.searchQuery.value
+//     .trim()
+//     .toLowerCase()
+//     .split(' ')
+//     .join('+');
+//   console.log(newsApiServer.searchQuery);
+
+//   if (newsApiServer.searchQuery === '') {
+//     return Notiflix.Notify.info('Please fill in the search field.');
+//   }
+
+//   // fetchPhoto();
+//   // evt.currentTarget.reset();
+
+//   try {
+//     const response = await newsApiServer.fetchImages();
+//     console.log(response.data.totalHits);
+//     const totalPicturs = response.data.totalHits;
+//     if (totalPicturs === 0) {
+//       clearPage();
+//       return Notiflix.Notify.failure(
+//         'Sorry, there are no images matching your search query. Please try again.'
+//       );
+//     } else {
+//       Notiflix.Notify.success(`Hooray! We found ${totalPicturs} images.`);
+
+//       // lastPages(data);
+//       appendPhotoMarkup(response.data);
+//       pageScrolling();
+//       lightbox.refresh();
+
+//       newsApiServer.totalImgs += response.data.hits.length;
+//       console.log('data.hits', newsApiServer.totalImgs);
+//       // btnLoadMore.classList.replace('hidden', 'load-more');
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+// async function onLoadMore() {
+//   try {
+//     const response = await newsApiServer.fetchImages();
+
+//     newsApiServer.totalImgs += response.data.hits.length;
+//     console.log('data.hits', newsApiServer.totalImgs);
+
+//     if (response.data.totalHits <= newsApiServer.totalImgs) {
+//       Notiflix.Notify.info(
+//         "We're sorry, but you've reached the end of search results."
+//       );
+//       window.removeEventListener('scroll', infinityScroll);
+//       loader.classList.replace('loader', 'hidden');
+//       totalImgs = 0;
+//     }
+//     appendPhotoMarkup(response.data);
+//     pageScrolling();
+//     lightbox.refresh();
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
