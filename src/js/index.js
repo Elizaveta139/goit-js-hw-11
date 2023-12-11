@@ -28,9 +28,11 @@ loader.classList.replace('loader', 'hidden');
 function onSubmitForm(evt) {
   evt.preventDefault();
 
+  window.scrollTo(0, 0);
+
   clearPage();
 
-  window.addEventListener('scroll', infinityScroll);
+  // window.addEventListener('scroll', infinityScroll);
 
   // btnLoadMore.classList.replace('load-more', 'hidden');
 
@@ -64,6 +66,7 @@ function fetchPhoto() {
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
+        window.addEventListener('scroll', infinityScroll);
         // lastPages(data);
         appendPhotoMarkup(data);
         pageScrolling();
