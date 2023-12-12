@@ -66,13 +66,26 @@ function fetchPhoto() {
       } else {
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
-        window.addEventListener('scroll', infinityScroll);
-        // lastPages(data);
+        newsApiServer.totalImgs += data.hits.length;
+        console.log('data.hits', newsApiServer.totalImgs);
+
         appendPhotoMarkup(data);
         pageScrolling();
         lightbox.refresh();
 
-        newsApiServer.totalImgs += data.hits.length;
+        if (data.totalHits <= newsApiServer.totalImgs) {
+          Notiflix.Notify.info(
+            "We're sorry, but you've reached the end of search results."
+          );
+          window.removeEventListener('scroll', infinityScroll);
+          loader.classList.replace('loader', 'hidden');
+          totalImgs = 0;
+          return;
+        }
+
+        window.addEventListener('scroll', infinityScroll);
+
+        // newsApiServer.totalImgs += data.hits.length;
         console.log('data.hits', newsApiServer.totalImgs);
         // btnLoadMore.classList.replace('hidden', 'load-more');
       }
